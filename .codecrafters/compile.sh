@@ -9,4 +9,3 @@
 set -e # Exit on failure
 
 mvn -q -B package -Ddir=/tmp/codecrafters-build-http-server-java
-!
