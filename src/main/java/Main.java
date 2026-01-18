@@ -1,13 +1,24 @@
 import java.io.IOException;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.zip.GZIPOutputStream;
 //import java.net.Socket;
 
 public class Main {
+  public static byte[] compressGzip(String str) throws IOException {
+    ByteArrayOutputStream obj = new ByteArrayOutputStream();
+
+    try(GZIPOutputStream gzip = new GZIPOutputStream(obj)) {
+      gzip.write(str.getBytes(StandardCharsets.UTF_8));
+      gzip.finish();
+    }
+    return obj.toByteArray();
+  }
   public static void handling(Socket clientSocket,String directory) {
     try (clientSocket) {
       // Since the tester restarts your program quite often, setting SO_REUSEADDR
@@ -61,6 +72,14 @@ public class Main {
         responseBdr.append("HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n");
         if(supportsGzip){
           responseBdr.append("Content-Encoding: gzip\r\n");
+          byte[] compressedBody = compressGzip(text);
+          len = compressedBody.length;
+          responseBdr.append("Content-Length: " + len + "\r\n\r\n");
+          OutputStream outputStream = clientSocket.getOutputStream();
+          outputStream.write(responseBdr.toString().getBytes(StandardCharsets.UTF_8));
+          outputStream.write(compressedBody);
+          outputStream.flush();
+          return;
         }
         responseBdr.append("Content-Length: " + len + "\r\n\r\n");
         responseBdr.append(text);
