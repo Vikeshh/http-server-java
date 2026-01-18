@@ -30,11 +30,9 @@ public class Main {
       Map<String, String> headers = new HashMap<>();
 
       while ((header = reader.readLine()) != null && !header.isEmpty()) {
-        int colonIndex = header.indexOf(":");
-        if (colonIndex != -1) {
-          String key = header.substring(0, colonIndex).trim().toLowerCase();
-          String value = header.substring(colonIndex + 1).trim();
-          headers.put(key, value);
+        String[] headerParts = header.split(": ");
+        if (headerParts.length == 2) {
+          headers.put(headerParts[0].toLowerCase(), headerParts[1]);
         }
       }
       String acceptEncoding = headers.get("accept-encoding");
