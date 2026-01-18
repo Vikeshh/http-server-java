@@ -4,7 +4,7 @@ import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
+import java.util.*;
 //import java.net.Socket;
 
 public class Main {
@@ -20,21 +20,35 @@ public class Main {
       String[] split = line.split(" ");
       String method = split[0];
       String path = split[1];
+      String header;
+
       // User Agent Block
       String uA = "";
-      String header;
       int len2 = 0;
       int contentLen=0;
+      boolean supportsGzip = false;
+      Map<String, String> headers = new HashMap<>();
+
       while ((header = reader.readLine()) != null && !header.isEmpty()) {
-        if (header.toLowerCase().startsWith("user-agent: ")) {
-          uA = header.substring(12).trim();
-          len2 = uA.length();
-        }else if (header.toLowerCase().startsWith("content-length:")) {
-          contentLen = Integer.parseInt(header.split(":")[1].trim());
+        String[] headerParts = header.split(": ");
+        if (headerParts.length == 2) {
+          headers.put(headerParts[0].toLowerCase(), headerParts[1]);
         }
       }
-
-
+      String acceptEncoding = headers.get("accept-encoding");
+      if (acceptEncoding != null) {
+        String[] encodings = acceptEncoding.split(",");
+        for (String encoding : encodings) {
+          if (encoding.trim().equalsIgnoreCase("gzip")) {
+            supportsGzip = true;
+            break;
+          }
+        }
+      }
+      uA = headers.getOrDefault("user-agent", "");
+      len2 = uA.length();
+      String cLenStr = headers.get("content-length");
+      if (cLenStr != null) contentLen = Integer.parseInt(cLenStr.trim());
       // Extraction block
       String response = "HTTP/1.1 404 Not Found\r\n\r\n";
       if (path.equals("/")) response = "HTTP/1.1 200 OK\r\n\r\n";
@@ -43,7 +57,14 @@ public class Main {
       else if (path.startsWith("/echo/")) {
         String text = path.substring(6);
         int len = text.length();
-        response = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + len + "\r\n\r\n" + text;
+        StringBuilder responseBdr = new StringBuilder();
+        responseBdr.append("HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n");
+        if(supportsGzip){
+          responseBdr.append("Content-Encoding: gzip\r\n");
+        }
+        responseBdr.append("Content-Length: " + len + "\r\n\r\n");
+        responseBdr.append(text);
+        response = responseBdr.toString();
       }
       else if (path.equals("/user-agent")) {
         response = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + len2 + "\r\n\r\n" + uA;
@@ -55,7 +76,6 @@ public class Main {
             byte[] content = Files.readAllBytes(filePath);
             int lenF = content.length;
             String hdr = "HTTP/1.1 200 OK\r\n" + "Content-Type: application/octet-stream\r\n" + "Content-Length: " + lenF + "\r\n\r\n";
-            //HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: 13\r\n\r\nHello, World!
             clientSocket.getOutputStream().write(hdr.getBytes());
             clientSocket.getOutputStream().write(content);
             return;
@@ -73,7 +93,7 @@ public class Main {
       clientSocket.getOutputStream().write(response.getBytes());
 
       clientSocket.close();
-    } catch (IOException e) {
+    } catch(IOException e) {
       System.out.println("IOException: " + e.getMessage());
     }
   }
