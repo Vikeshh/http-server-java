@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.GZIPOutputStream;
 //import java.net.Socket;
 
@@ -29,7 +31,8 @@ public class Main {
       while(true) {
         String line = reader.readLine();
 
-        if (line == null||line.isEmpty()) break;
+        if (line == null) break;
+        if(line.isEmpty()) continue;
         String[] split = line.split(" ");
         String method = split[0];
         String path = split[1];
@@ -48,8 +51,9 @@ public class Main {
             headers.put(headerParts[0].toLowerCase(), headerParts[1]);
           }
         }
+        boolean shouldClose = false;
         if ("close".equalsIgnoreCase(headers.get("connection"))) {
-          break;
+          shouldClose = true;
         }
         String acceptEncoding = headers.get("accept-encoding");
         if (acceptEncoding != null) {
@@ -84,6 +88,7 @@ public class Main {
             outputStream.write(responseBdr.toString().getBytes(StandardCharsets.UTF_8));
             outputStream.write(compressedBody);
             outputStream.flush();
+            if (shouldClose) break;
             continue;
           }
           responseBdr.append("Content-Length: " + len + "\r\n\r\n");
@@ -101,6 +106,7 @@ public class Main {
               String hdr = "HTTP/1.1 200 OK\r\n" + "Content-Type: application/octet-stream\r\n" + "Content-Length: " + lenF + "\r\n\r\n";
               clientSocket.getOutputStream().write(hdr.getBytes());
               clientSocket.getOutputStream().write(content);
+              if (shouldClose) break;
               continue;
             }
           } else if (method.equals("POST")) {
@@ -114,7 +120,7 @@ public class Main {
 
         System.out.println("accepted new connection");
         clientSocket.getOutputStream().write(response.getBytes());
-
+        if(shouldClose) break;
       }
     } catch(IOException e) {
       System.out.println("IOException: " + e.getMessage());
@@ -132,13 +138,12 @@ public class Main {
       }
     }
     final String fdr = directory;
-    try{
-      ServerSocket serverSocket = new ServerSocket(4221);
+    ExecutorService executor = Executors.newFixedThreadPool(10);
+    try(ServerSocket serverSocket = new ServerSocket(4221)){
       serverSocket.setReuseAddress(true);
       while(true){
         Socket clientSocket = serverSocket.accept();
-        Thread t= new Thread(() -> handling(clientSocket,fdr));
-        t.start();
+        executor.submit(() -> handling(clientSocket,fdr));
       }
     }catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
