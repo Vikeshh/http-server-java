@@ -1,109 +1,51 @@
-Custom HTTP Server in Java
+Custom HTTP Server (Java)
 
-A lightweight, multithreaded HTTP server built from scratch in Java using low-level socket programming. Designed to demonstrate a deep understanding of networking fundamentals, HTTP protocol handling, and concurrent request processing.
-
-Features
-
-Handles basic HTTP requests over TCP
-
-Supports multiple client connections using multithreading
-
-Parses HTTP request headers manually
-
-Serves static responses
-
-Clean separation of concerns for extensibility
-
-Built using modern Java (Java 21+ compatible)
+A basic HTTP server implemented from scratch in Java using low-level socket programming. This project focuses on understanding how HTTP works under the hood without relying on frameworks.
 
 Tech Stack
 
 Language: Java 21+
 
-Networking: ServerSocket, Socket
+Networking: TCP/IP (ServerSocket, Socket)
 
-Concurrency: Threads / Lambdas
+Concurrency: Multithreading (Java Threads, Lambdas)
 
 Protocol: HTTP/1.1
 
-I/O: Buffered Streams
+What It Does
 
-Project Structure
-src/
- ├── server/
- │   ├── HttpServer.java
- │   ├── ClientHandler.java
- │   └── RequestParser.java
- └── utils/
-     └── ResponseBuilder.java
+Listens for incoming HTTP connections
 
-How It Works
+Handles multiple clients concurrently
 
-Server binds to a specified port using ServerSocket
+Parses raw HTTP requests
 
-Listens continuously for incoming client connections
+Sends basic HTTP responses
 
-Each connection is handled in a separate thread
-
-HTTP request is read and parsed manually
-
-Appropriate HTTP response is constructed and sent back
-
-Connection is closed after response delivery
-
-Getting Started
-Prerequisites
-
-Java 21 or later
-
-Any Java IDE or terminal
-
-Run Locally
+How to Run
 javac HttpServer.java
 java HttpServer
 
 
-By default, the server runs on:
+Server runs on:
 
 http://localhost:8080
 
 
-You can test it using:
-
-Browser
-
-Postman
-
-curl
+Test using browser or:
 
 curl http://localhost:8080
 
-Sample Response
-HTTP/1.1 200 OK
-Content-Type: text/plain
+Why This Project
 
-Hello from Custom Java HTTP Server
+Built to gain hands-on experience with:
 
-Future Improvements
+TCP socket communication
 
-Support for multiple HTTP methods (POST, PUT, DELETE)
+HTTP request/response flow
 
-Static file serving
+Multithreaded server design in Java
 
-Thread pool implementation
+Status
 
-HTTP status code handling
-
-Logging and metrics
-
-Keep-alive connections
-
-Why This Project?
-
-This project was built to:
-
-Strengthen understanding of TCP/IP and HTTP
-
-Explore server-side concurrency in Java
-
-Avoid framework abstractions and work close to the metal
+Core functionality implemented. Further enhancements planned.
