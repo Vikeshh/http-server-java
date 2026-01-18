@@ -51,11 +51,8 @@ public class Main {
             headers.put(headerParts[0].toLowerCase(), headerParts[1]);
           }
         }
-        boolean shouldClose = false;
-        if ("close".equalsIgnoreCase(headers.get("connection"))) {
-          shouldClose = true;
-        }
-        String acceptEncoding = headers.get("accept-encoding");
+        boolean shouldClose = "close".equalsIgnoreCase(headers.get("connection"));
+        String connHeader = shouldClose ? "Connection: close\r\n" : "";        String acceptEncoding = headers.get("accept-encoding");
         if (acceptEncoding != null) {
           String[] encodings = acceptEncoding.split(",");
           for (String encoding : encodings) {
@@ -70,15 +67,15 @@ public class Main {
         String cLenStr = headers.get("content-length");
         if (cLenStr != null) contentLen = Integer.parseInt(cLenStr.trim());
         // Extraction block
-        String response = "HTTP/1.1 404 Not Found\r\n\r\n";
-        if (path.equals("/")) response = "HTTP/1.1 200 OK\r\n\r\n";
+        String response = "HTTP/1.1 404 Not Found\r\n"+connHeader+"\r\n";
+        if (path.equals("/")) response = "HTTP/1.1 200 OK\r\n"+connHeader+"\r\n";
           //or flush
           // ECHO
         else if (path.startsWith("/echo/")) {
           String text = path.substring(6);
           int len = text.length();
           StringBuilder responseBdr = new StringBuilder();
-          responseBdr.append("HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n");
+          responseBdr.append("HTTP/1.1 200 OK\r\n" +connHeader+"Content-Type: text/plain\r\n");
           if (supportsGzip) {
             responseBdr.append("Content-Encoding: gzip\r\n");
             byte[] compressedBody = compressGzip(text);
@@ -95,7 +92,7 @@ public class Main {
           responseBdr.append(text);
           response = responseBdr.toString();
         } else if (path.equals("/user-agent")) {
-          response = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + len2 + "\r\n\r\n" + uA;
+          response = "HTTP/1.1 200 OK\r\n" +connHeader+ "Content-Type: text/plain\r\n" + "Content-Length: " + len2 + "\r\n\r\n" + uA;
         } else if (path.startsWith("/files/")) {
           String file = path.substring(7);
           Path filePath = Paths.get(directory, file);
@@ -103,7 +100,7 @@ public class Main {
             if (Files.exists(filePath)) {
               byte[] content = Files.readAllBytes(filePath);
               int lenF = content.length;
-              String hdr = "HTTP/1.1 200 OK\r\n" + "Content-Type: application/octet-stream\r\n" + "Content-Length: " + lenF + "\r\n\r\n";
+              String hdr = "HTTP/1.1 200 OK\r\n"+connHeader + "Content-Type: application/octet-stream\r\n" + "Content-Length: " + lenF + "\r\n\r\n";
               clientSocket.getOutputStream().write(hdr.getBytes());
               clientSocket.getOutputStream().write(content);
               if (shouldClose) break;
@@ -114,7 +111,7 @@ public class Main {
             reader.read(buffer, 0, contentLen);
             String body = new String(buffer);
             Files.writeString(filePath, body);
-            response = "HTTP/1.1 201 Created\r\n\r\n";
+            response = "HTTP/1.1 201 Created\r\n"+connHeader+"\r\n";
           }
         }
 
