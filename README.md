@@ -22,20 +22,6 @@ Parses raw HTTP requests
 
 Sends basic HTTP responses
 
-How to Run
-javac HttpServer.java
-java HttpServer
-
-
-Server runs on:
-
-http://localhost:8080
-
-
-Test using browser or:
-
-curl http://localhost:8080
-
 Why This Project
 
 Built to gain hands-on experience with:
