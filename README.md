@@ -1,4 +1,4 @@
-Custom HTTP Server (Java)
+Custom HTTP Server in Java
 
 A lightweight, multithreaded HTTP server built from scratch in Java using low-level socket programming. Designed to demonstrate a deep understanding of networking fundamentals, HTTP protocol handling, and concurrent request processing.
 
