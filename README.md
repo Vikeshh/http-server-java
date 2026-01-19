@@ -1,5 +1,6 @@
-Custom HTTP Server (Java)
-A high-performance, multi-threaded HTTP/1.1 server built from scratch using Java Sockets. This project demonstrates core networking concepts, manual HTTP parsing, and concurrent system design.
+# Custom HTTP Server (Java)
+
+**A high-performance, multi-threaded HTTP/1.1 server built from scratch using Java Sockets.** This project demonstrates core networking concepts, manual HTTP parsing, and concurrent system design.
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
