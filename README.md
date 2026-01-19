@@ -34,36 +34,24 @@ This project was developed using a Test-Driven approach. The server logic is val
 
 A basic HTTP server implemented from scratch in Java using low-level socket programming. This project focuses on understanding how HTTP works under the hood without relying on frameworks.
 
-Tech Stack
+🧠 Technical Implementation
+Concurrent Processing
+To prevent "head-of-line blocking," the server utilizes an ExecutorService. Each incoming socket is handed off to a worker thread, allowing the main server loop to remain responsive to new connections.
 
-Language: Java 21+
+Manual Protocol Parsing
+The server manually implements the HTTP/1.1 protocol:
 
-Networking: TCP/IP (ServerSocket, Socket)
+Request Parsing: Extracting method, path, and headers via BufferedReader.
 
-Concurrency: Multithreading (Java Threads, Lambdas)
+GZIP Logic: Using GZIPOutputStream to compress data only when the client specifies support in headers.
 
-Protocol: HTTP/1.1
+Connection Management: Monitoring the Connection header to determine whether to persist or terminate the socket.
 
-What It Does
+🧪 Automated Testing
+This implementation successfully passed a rigorous suite of automated tests covering:
 
-Listens for incoming HTTP connections
+HTTP Compression: Proper header signaling and compression integrity.
 
-Handles multiple clients concurrently
+Multiple Connections: Stress testing with simultaneous requests.
 
-Parses raw HTTP requests
-
-Sends basic HTTP responses
-
-Why This Project
-
-Built to gain hands-on experience with:
-
-TCP socket communication
-
-HTTP request/response flow
-
-Multithreaded server design in Java
-
-Status
-
-Core functionality implemented. Further enhancements planned.
+Persistent Connections: Efficiently reusing or closing sockets based on client intent.
