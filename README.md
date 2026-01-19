@@ -21,6 +21,16 @@ sequenceDiagram
     Server->>Client: HTTP/1.1 200 OK (with GZIP if req)
     Note right of Client: Connection Closed/Keep-Alive
 
+### 🧪 Automated Testing
+This project was developed using a Test-Driven approach. The server logic is validated against a rigorous suite of concurrent connection and protocol compliance tests.
+
+* **Environment:** Tested on **Ubuntu Linux** to ensure POSIX socket compatibility.
+* **Build Lifecycle:** Managed via **Maven** for consistent builds and dependency resolution.
+* **CI/CD:** Integrated with automated testers to validate:
+    * Concurrent request handling (10+ simultaneous clients).
+    * GZIP compression integrity.
+    * File I/O edge cases (missing files, large uploads).
+
 
 A basic HTTP server implemented from scratch in Java using low-level socket programming. This project focuses on understanding how HTTP works under the hood without relying on frameworks.
 
