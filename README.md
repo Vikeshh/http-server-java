@@ -25,6 +25,31 @@ sequenceDiagram
     Server->>Client: HTTP/1.1 200 OK (with GZIP if req)
     Note right of Client: Connection Closed/Keep-Alive
 
+**Status Codes Implemented**:
+200 OK
+Sent when things go right, which is rare but happens.
+
+GET /
+
+GET /echo/{text}
+
+GET /user-agent
+
+GET /files/{filename} when the file exists
+
+201 Created
+Because you bothered to implement POST properly.
+
+POST /files/{filename} when a file is successfully written
+
+404 Not Found
+The default mood of your server.
+
+Any path that doesn’t match the supported routes
+
+GET /files/{filename} when the file does not exist
+
+
 ### 🧪 Automated Testing
 This project was developed using a Test-Driven approach. The server logic is validated against a rigorous suite of concurrent connection and protocol compliance tests.
 
