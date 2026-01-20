@@ -27,25 +27,31 @@ sequenceDiagram
 
 **Status Codes Implemented**:
 200 OK
-Sent when things go right, which is rare but happens.
 
-GET /
+
+GET 
+
 
 GET /echo/{text}
 
+
 GET /user-agent
+
 
 GET /files/{filename} when the file exists
 
+
 201 Created
-Because you bothered to implement POST properly.
+
 
 POST /files/{filename} when a file is successfully written
 
+
 404 Not Found
-The default mood of your server.
+
 
 Any path that doesn’t match the supported routes
+
 
 GET /files/{filename} when the file does not exist
 
