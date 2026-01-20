@@ -26,6 +26,8 @@ sequenceDiagram
     Note right of Client: Connection Closed/Keep-Alive
 
 **Status Codes Implemented**:
+
+
 200 OK
 
 
