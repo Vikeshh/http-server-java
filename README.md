@@ -28,7 +28,7 @@ sequenceDiagram
 **Status Codes Implemented**:
 
 
-200 OK
+*200 OK*
 
 
 GET 
@@ -43,13 +43,13 @@ GET /user-agent
 GET /files/{filename} when the file exists
 
 
-201 Created
+*201 Created*
 
 
 POST /files/{filename} when a file is successfully written
 
 
-404 Not Found
+*404 Not Found*
 
 
 Any path that doesn’t match the supported routes
